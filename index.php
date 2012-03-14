@@ -102,3 +102,5 @@ if (isset($_GET['phpsess']) && isset($_GET['write'])) {
 <p><a href="./?phpsess&read">PHP SESSIONS -> READ TESTS</a></p>
 NOTICE;
 }
+
+echo '<p>$_SESSION:</p><pre>' . print_r($_SESSION, true) . '</pre>';
