@@ -44,6 +44,42 @@ function total() {
 }
 
 /**
+ * Dummy Object Abstract
+ */
+abstract class AbstractDummyObject {
+  protected $_protectedVal;
+  private $_privateVal;
+  public $_publicVal;
+	
+  function __construct($protected, $private, $public) {
+      $this->_protectedVal = $protected;
+      $this->_privateVal = $private;
+      $this->_publicVal = $public;
+  }
+	
+  function __toString() {
+    return "Protected {$this->_protectedVal} - Private {$this->_privateVal} - Public {$this->_publicVal}";  
+  }
+}
+
+class DummyObject extends AbstractDummyObject {
+	protected $_valueA;
+	protected $_valueB;
+	protected $_valueC;
+	
+	public function __construct() {
+	  parent::__construct("PROTECTED", "PRIVATE", "PUBLIC");
+	  $this->_valueA = array("test_array" => array("this" => "is", "a" => "test"));
+	  $this->_valueB = "A VALUE";
+	  $this->_valueC = 31238;
+	}
+	
+	public function __toString() {
+		return 'Parent Object: ' . parent::__toString() . ", Super Object: A: {$this->_valueA} - B: {$this->_valueB} - C: {$this->_valueC}"; 
+	}
+}
+
+/**
  * Benchmarks
  */
 
@@ -51,7 +87,8 @@ function sessionwrite($n) {
   $i = -1;
   while ($i++ < $n) {
     if (!isset($_SESSION[$i])) {
-      $_SESSION[$i] = $i;
+      $_SESSION[$i] = array('some_value' => $i, 'a_fixed_value' => 'some_value');
+      $_SESSION[$i << 1] = new DummyObject();
     }
   }
 }
@@ -61,6 +98,7 @@ function sessionread($n) {
   while ($i++ < $n) {
     if (isset($_SESSION[$i])) {
       $f = $_SESSION[$i];
+      $g = $_SESSION[$i << 1];
     }
   }
 }
@@ -102,5 +140,3 @@ if (isset($_GET['phpsess']) && isset($_GET['write'])) {
 <p><a href="./?phpsess&read">PHP SESSIONS -> READ TESTS</a></p>
 NOTICE;
 }
-
-echo '<p>$_SESSION:</p><pre>' . print_r($_SESSION, true) . '</pre>';
