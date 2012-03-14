@@ -93,4 +93,12 @@ if (isset($_GET['phpsess']) && isset($_GET['write'])) {
 } else if (isset($_GET['phpsess']) && isset($_GET['read'])) {
   session_start();
   readtests();
+  session_unset();
+} else {
+  echo <<<NOTICE
+<p>Usage:</p>
+<p>WRITE ensures that \$_SESSION has variables in to be benchmarked with READ tests. READ unsets all \$_SESSION variables</p>
+<p><a href="./?phpsess&write">PHP SESSIONS -> WRITE TESTS</a></p>
+<p><a href="./?phpsess&read">PHP SESSIONS -> READ TESTS</a></p>
+NOTICE;
 }
