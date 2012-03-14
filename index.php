@@ -30,7 +30,7 @@ function end_test($start, $name) {
   $pad = str_repeat(" ", 24-strlen($name)-strlen($num));
 
   echo $name.$pad.$num."\n<br>";
-	ob_start();
+  ob_start();
   return getmicrotime();
 }
 
@@ -103,12 +103,19 @@ function sessionread($n) {
   }
 }
 
+function sessionstart() {
+  session_start();
+}
+
+
 /**
- * Test functions  - ?phpsess  <-  QS php sessions
+ * Test functions
  */
 
 function readtests() {
   $t0 = $t = start_test();
+  sessionstart();
+  $t = end_test($t, "sessionstart()");
   sessionread(20000);
   $t = end_test($t, "sessionread(20000)");
   total($t0, "Total");
@@ -116,6 +123,8 @@ function readtests() {
 
 function writetests() {
   $t0 = $t = start_test();
+  sessionstart();
+  $t = end_test($t, "sessionstart()");
   sessionwrite(10000);
   $t = end_test($t, "sessionwrite(20000)");
   total($t0, "Total");
@@ -126,10 +135,8 @@ function writetests() {
  * Run tests
  */
 if (isset($_GET['phpsess']) && isset($_GET['write'])) {
-  session_start();
   writetests();
 } else if (isset($_GET['phpsess']) && isset($_GET['read'])) {
-  session_start();
   readtests();
   session_unset();
 } else {
