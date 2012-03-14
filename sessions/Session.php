@@ -1,4 +1,10 @@
 <?php
+require_once('SessionWriter.php');
+/**
+ * A Session object. A Session object must be started using the static method `start`.
+ * @author Samuel Giles
+ * @version 0.1
+ */
 class Session {
   private $_objects;
   private $_idHash;
@@ -7,17 +13,22 @@ class Session {
   
   private static $instance = NULL;
   
-  public static function start(SessionWriter $sessionWriter, $sessionExpires = 0, $sessionPath = '/') {
+  /**
+   * Starts a Session given a SessionWriter, this checks for a cookie that can identify a session with a client/request, if one hasn't been started yet then 
+   * a cookie will be set.
+   * @param SessionWriter $sessionWriter The SessionWriter that is used for reading and writing the sessions.
+   * @param int $sessionExpires The time the session expires. This is a Unix timestamp so is in number of seconds since the epoch. If left as 0 or undefined the session will last until the client closes their browser/client.
+   * @param string $sessionPath The path on the server in which the session will be available on. If set to '/', the session will be available within the entire domain. If set to '/foo/', the session is only be available within the /foo/ directory and all sub-directories such as /foo/bar/ of domain. The default value is the current directory that the session is started in.
+   */
+  public static function start(SessionWriter $sessionWriter, $sessionExpires = 0, $sessionPath = -1) {
     if (Session::$instance === NULL) {
-  	 /**
-  	  * We've got to tie a particular user to a Session, so we'll create a hash for them if we haven't already.
-  	  */
+  	  //We've got to tie a particular user to a Session, so we'll create a hash for them if we haven't already.
       if (($new = (isset($_COOKIE['SESS']) && $_COOKIE['SESS'] !== NULL))) {
         // We must have a session hash key :)
         $sessionHash = $_COOKIE['SESS'];
       } else {
         $sessionHash = hash('sha256', $_SERVER['REMOTE_ADDR'] . time() . rand(0, 100));
-        setcookie('SESS', $sessionHash, $sessionExpires, $sessionPath);
+        setcookie('SESS', $sessionHash, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
       }
       
       Session::$instance = new Session($sessionWriter, $sessionHash, $new);
