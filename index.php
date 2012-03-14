@@ -8,7 +8,7 @@
  */
  
 if (function_exists("date_default_timezone_set")) {
-	date_default_timezone_set("UTC");
+  date_default_timezone_set("UTC");
 }
 
 function getmicrotime() {
@@ -17,7 +17,7 @@ function getmicrotime() {
 }
 
 function start_test() {
-	ob_start();
+  ob_start();
   return getmicrotime();
 }
 
@@ -52,9 +52,9 @@ abstract class AbstractDummyObject {
   public $_publicVal;
 	
   function __construct($protected, $private, $public) {
-      $this->_protectedVal = $protected;
-      $this->_privateVal = $private;
-      $this->_publicVal = $public;
+    $this->_protectedVal = $protected;
+    $this->_privateVal = $private;
+    $this->_publicVal = $public;
   }
 	
   function __toString() {
@@ -63,20 +63,20 @@ abstract class AbstractDummyObject {
 }
 
 class DummyObject extends AbstractDummyObject {
-	protected $_valueA;
-	protected $_valueB;
-	protected $_valueC;
-	
-	public function __construct() {
-	  parent::__construct("PROTECTED", "PRIVATE", "PUBLIC");
-	  $this->_valueA = array("test_array" => array("this" => "is", "a" => "test"));
-	  $this->_valueB = "A VALUE";
-	  $this->_valueC = 31238;
-	}
-	
-	public function __toString() {
-		return 'Parent Object: ' . parent::__toString() . ", Super Object: A: {$this->_valueA} - B: {$this->_valueB} - C: {$this->_valueC}"; 
-	}
+  protected $_valueA;
+  protected $_valueB;
+  protected $_valueC;
+
+  public function __construct() {
+    parent::__construct("PROTECTED", "PRIVATE", "PUBLIC");
+	$this->_valueA = array("test_array" => array("this" => "is", "a" => "test"));
+	$this->_valueB = "A VALUE";
+	$this->_valueC = 31238;
+  }
+
+  public function __toString() {
+    return 'Parent Object: ' . parent::__toString() . ", Super Object: A: {$this->_valueA} - B: {$this->_valueB} - C: {$this->_valueC}"; 
+  }
 }
 
 /**
@@ -109,15 +109,15 @@ function sessionread($n) {
 
 function readtests() {
   $t0 = $t = start_test();
-  sessionread(10000);
-  $t = end_test($t, "sessionread(10000)");
+  sessionread(20000);
+  $t = end_test($t, "sessionread(20000)");
   total($t0, "Total");
 }
 
 function writetests() {
   $t0 = $t = start_test();
   sessionwrite(10000);
-  $t = end_test($t, "sessionwrite(10000)");
+  $t = end_test($t, "sessionwrite(20000)");
   total($t0, "Total");
 }
 
