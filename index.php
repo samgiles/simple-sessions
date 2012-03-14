@@ -29,7 +29,7 @@ function end_test($start, $name) {
   $num = number_format($end-$start,3);
   $pad = str_repeat(" ", 24-strlen($name)-strlen($num));
 
-  echo $name.$pad.$num."\n";
+  echo $name.$pad.$num."\n<br>";
 	ob_start();
   return getmicrotime();
 }
@@ -37,7 +37,7 @@ function end_test($start, $name) {
 function total() {
   global $total;
   $pad = str_repeat("-", 24);
-  echo $pad."\n";
+  echo $pad."\n<br>";
   $num = number_format($total,3);
   $pad = str_repeat(" ", 24-strlen("Total")-strlen($num));
   echo "Total".$pad.$num."\n";
@@ -71,15 +71,15 @@ function sessionread($n) {
 
 function readtests() {
   $t0 = $t = start_test();
-  sessionread(100);
-  $t = end_test($t, "sessionread(100)");
+  sessionread(10000);
+  $t = end_test($t, "sessionread(10000)");
   total($t0, "Total");
 }
 
 function writetests() {
   $t0 = $t = start_test();
-  sessionwrite(100);
-  $t = end_test($t, "sessionwrite(100)");
+  sessionwrite(10000);
+  $t = end_test($t, "sessionwrite(10000)");
   total($t0, "Total");
 }
 
