@@ -15,7 +15,7 @@ class FileSessionWriter extends SessionWriter {
       return false;
     }
     
-    return json_decode($object);
+    return json_decode($object, true);
   }
 
   public function write($hash, $sessionObject) {
