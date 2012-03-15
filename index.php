@@ -11,6 +11,7 @@ if (function_exists("date_default_timezone_set")) {
   date_default_timezone_set("UTC");
 }
 
+ini_set('display_errors', 1);
 
 function getmicrotime() {
   $t = gettimeofday();
