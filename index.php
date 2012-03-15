@@ -11,7 +11,7 @@ if (function_exists("date_default_timezone_set")) {
   date_default_timezone_set("UTC");
 }
 
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 
 function getmicrotime() {
   $t = gettimeofday();
@@ -235,32 +235,32 @@ $ch = curl_init();
 
 curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?phpsess&write');
 curl_setopt($ch, CURLOPT_HEADER, 0);
-echo "PHP SESS WRITE <BR>";
+echo "<br>PHP SESS WRITE <br>";
 curl_exec($ch);
 
 curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?phpsess&read');
 curl_setopt($ch, CURLOPT_HEADER, 0);
-echo "PHP SESS READ <BR>";
+echo "<br>PHP SESS READ<br>";
 curl_exec($ch);
 
 curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?file&write');
 curl_setopt($ch, CURLOPT_HEADER, 0);
-echo "FILE SESS WRITE <BR>";
+echo "<br>FILE SESS WRITE<br>";
 curl_exec($ch);
 
 curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?file&read');
 curl_setopt($ch, CURLOPT_HEADER, 0);
-echo "FILE SESS READ <BR>";
+echo "<br>FILE SESS READ<br>";
 curl_exec($ch);
 
 curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?pdo&write');
 curl_setopt($ch, CURLOPT_HEADER, 0);
-echo "PDO SESS WRITE <BR>";
+echo "<br>PDO SESS WRITE<br>";
 curl_exec($ch);
 
 curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?pdo&read');
 curl_setopt($ch, CURLOPT_HEADER, 0);
-echo "PDO SESS READ <BR>";
+echo "<br>PDO SESS READ<br>";
 curl_exec($ch);
 
 // close cURL resource, and free up system resources
