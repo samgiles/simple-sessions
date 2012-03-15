@@ -27,8 +27,6 @@ class PDOSessionWriter extends SessionWriter {
     
     $this->_inDatabase = true;
     $object = unserialize($row['VALUE']);
-    echo "\nREAD\n";
-    print_r($object);
     return $object;
   }
 
@@ -43,8 +41,6 @@ class PDOSessionWriter extends SessionWriter {
     
     $this->_pdoWriteStatement->bindValue(':hash', $hash, PDO::PARAM_STR);
     $object = serialize($sessionObject);
-    echo "\nWRITE\n";
-    print_r($object);
     $this->_pdoWriteStatement->bindValue(':object', $object, PDO::PARAM_LOB);
     // Tidy up return interfaces.. We dont NEED to return anything but should probably tidy them up.
     return $this->_pdoWriteStatement->execute();
