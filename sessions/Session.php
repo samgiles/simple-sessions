@@ -64,6 +64,7 @@ class Session {
 
   public static function get($key) {
     if (Session::sessionStarted()) {
+      $key = (string)$key;
       return SESSION::$instance->$key();
     }
     return NULL;

@@ -11,6 +11,8 @@ if (function_exists("date_default_timezone_set")) {
   date_default_timezone_set("UTC");
 }
 
+
+
 function getmicrotime() {
   $t = gettimeofday();
   return ($t['sec'] + $t['usec'] / 1000000);
@@ -27,7 +29,7 @@ function end_test($start, $name) {
   ob_end_clean();
   $total += $end-$start;
   $num = number_format($end-$start,3);
-  $pad = str_repeat(" ", 24-strlen($name)-strlen($num));
+  $pad = str_repeat(" ", 50-strlen($name)-strlen($num));
 
   echo $name.$pad.$num."\n<br>";
   ob_start();
