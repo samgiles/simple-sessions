@@ -19,7 +19,7 @@ class FileSessionWriter extends SessionWriter {
   }
 
   public function write($hash, $sessionObject) {
-    return file_put_contents("{$this->_sessionSavePath}/SESS_$hash.s", $sessionObject);
+    return file_put_contents("{$this->_sessionSavePath}/SESS_$hash.s", json_encode($sessionObject));
   }
 
 }
