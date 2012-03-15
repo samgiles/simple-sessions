@@ -59,7 +59,7 @@ abstract class AbstractDummyObject {
   }
 	
   function __toString() {
-    return "Protected {$this->_protectedVal} - Private {$this->_privateVal} - Public {$this->_publicVal}";  
+    return "Abstract Dummy Object";  
   }
 }
 
@@ -76,7 +76,7 @@ class DummyObject extends AbstractDummyObject {
   }
 
   public function __toString() {
-    return 'Parent Object: ' . parent::__toString() . ", Super Object: A: {$this->_valueA} - B: {$this->_valueB} - C: {$this->_valueC}"; 
+    return "Dummy Object";
   }
 }
 
