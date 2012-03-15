@@ -23,12 +23,14 @@ class Session {
   public static function start(SessionWriter $sessionWriter, $sessionExpires = 0, $sessionPath = -1) {
     if (Session::$instance === NULL) {
   	  //We've got to tie a particular user to a Session, so we'll create a hash for them if we haven't already.
-      if (($new = (isset($_COOKIE['SESS']) && $_COOKIE['SESS'] !== NULL))) {
+      if (isset($_COOKIE['SESS']) && $_COOKIE['SESS'] !== NULL) {
         // We must have a session hash key :)
         $sessionHash = $_COOKIE['SESS'];
+        $new = false;
       } else {
         $sessionHash = hash('sha256', $_SERVER['REMOTE_ADDR'] . time() . rand(0, 100));
         setcookie('SESS', $sessionHash, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
+      	$new = true;
       }
       
       Session::$instance = new Session($sessionWriter, $sessionHash, $new);

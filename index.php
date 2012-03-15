@@ -12,7 +12,6 @@ if (function_exists("date_default_timezone_set")) {
 }
 
 
-
 function getmicrotime() {
   $t = gettimeofday();
   return ($t['sec'] + $t['usec'] / 1000000);
