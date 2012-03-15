@@ -87,7 +87,7 @@ class DummyObject extends AbstractDummyObject {
 include_once 'sessions/Session.php';
 include_once 'sessions/SessionWriter.php';
 include_once 'sessions/session_writers/FileSessionWriter.php';
-
+include_once 'sessions/session_writers/PDOSessionWriter.php';
 
 /**
  * Benchmarks
@@ -134,6 +134,25 @@ function filesessionread($n) {
   }
 }
 
+function pdosessionstart() {
+  Session::start(new PDOSessionWriter(new PDO(":dsn", ":uname", ":pword")));
+}
+
+function pdosessionwrite($n) {
+  $i = -1;
+  while ($i++ < $n) {
+    Session::set($i, array('some_value' => $i, 'a_fixed_value' => 'some_value'));
+    Session::set($i << 1, new DummyObject());
+  }
+}
+
+function pdosessionread($n) {
+  $i = -1;
+  while ($i++ < $n) {
+    $f = Session::get($i);;
+    $g = Session::get($i << 1);;
+  }
+}
 
 /**
  * Test functions
@@ -175,6 +194,24 @@ function filesessionreadtests() {
   total($t0, "Total");
 }
 
+function pdosessionwritetests() {
+  $t0 = $t = start_test();
+  pdosessionstart();
+  $t = end_test($t, "pdosessionstart()");
+  pdosessionwrite(20000);
+  $t = end_test($t, "pdosessionwrite(20000)");
+  total($t0, "Total");
+}
+
+function pdosessionreadtests() {
+  $t0 = $t = start_test();
+  pdosessionstart();
+  $t = end_test($t, "pdosessionstart()");
+  pdosessionread(20000);
+  $t = end_test($t, "pdosessionread(20000)");
+  total($t0, "Total");
+}
+
 /**
  * Run tests
  */
@@ -187,6 +224,10 @@ if (isset($_GET['phpsess']) && isset($_GET['write'])) {
   filesessionwritetests();
 } else if (isset($_GET['file']) && isset($_GET['read'])) {
   filesessionreadtests();
+} else if (isset($_GET['pdo']) && isset($_GET['read'])) {
+  pdosessionreadtests();
+} else if (isset($_GET['pdo']) && isset($_GET['write'])) {
+  pdosessionwritetests();
 }
 ?>
 <p>Usage:</p>

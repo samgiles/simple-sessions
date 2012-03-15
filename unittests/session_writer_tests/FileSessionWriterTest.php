@@ -1,13 +1,7 @@
 <?php
 include_once ('SessionWriterTest.php');
 include_once (dirname(__FILE__) . '/../../sessions/session_writers/FileSessionWriter.php');
-
-class DummyObject {
-  public $a = "Test";
-  public $b = "Test2";
-  public $c = "Test3";
-  public $d = array("A" => "Test4");
-}
+include_once('DummyObject.php');
 
 class FileSessionWriterTest extends SessionWriterTest {
   
