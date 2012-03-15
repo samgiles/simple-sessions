@@ -3,7 +3,7 @@ class FileSessionWriter extends SessionWriter {
 
   private $_sessionSavePath;	
 	
-  private function __construct() {
+  public function __construct() {
     $this->_sessionSavePath = session_save_path();
   }
   
