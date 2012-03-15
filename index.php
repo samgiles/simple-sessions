@@ -228,9 +228,41 @@ if (isset($_GET['phpsess']) && isset($_GET['write'])) {
   pdosessionreadtests();
 } else if (isset($_GET['pdo']) && isset($_GET['write'])) {
   pdosessionwritetests();
+} else {
+
+
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?phpsess&write');
+curl_setopt($ch, CURLOPT_HEADER, 0);
+echo "PHP SESS WRITE <BR>";
+curl_exec($ch);
+
+curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?phpsess&read');
+curl_setopt($ch, CURLOPT_HEADER, 0);
+echo "PHP SESS READ <BR>";
+curl_exec($ch);
+
+curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?file&write');
+curl_setopt($ch, CURLOPT_HEADER, 0);
+echo "FILE SESS WRITE <BR>";
+curl_exec($ch);
+
+curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?file&read');
+curl_setopt($ch, CURLOPT_HEADER, 0);
+echo "FILE SESS READ <BR>";
+curl_exec($ch);
+
+curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?pdo&write');
+curl_setopt($ch, CURLOPT_HEADER, 0);
+echo "PDO SESS WRITE <BR>";
+curl_exec($ch);
+
+curl_setopt($ch, CURLOPT_URL, $_SERVER['HTTP_HOST'] . '/?pdo&read');
+curl_setopt($ch, CURLOPT_HEADER, 0);
+echo "PDO SESS READ <BR>";
+curl_exec($ch);
+
+// close cURL resource, and free up system resources
+curl_close($ch);
 }
-?>
-<p>Usage:</p>
-<p>WRITE ensures that \$_SESSION has variables in to be benchmarked with READ tests. READ unsets all \$_SESSION variables</p>
-<p><a href="./?phpsess&write">PHP SESSIONS -> WRITE TESTS</a></p>
-<p><a href="./?phpsess&read">PHP SESSIONS -> READ TESTS</a></p>
