@@ -80,26 +80,30 @@ class DummyObject extends AbstractDummyObject {
 }
 
 /**
+ * Includes
+ */
+include_once 'sessions/Session.php';
+include_once 'sessions/SessionWriter.php';
+include_once 'sessions/session_writers/FileSessionWriter.php';
+
+
+/**
  * Benchmarks
  */
 
 function sessionwrite($n) {
   $i = -1;
   while ($i++ < $n) {
-    if (!isset($_SESSION[$i])) {
-      $_SESSION[$i] = array('some_value' => $i, 'a_fixed_value' => 'some_value');
-      $_SESSION[$i << 1] = new DummyObject();
-    }
+    $_SESSION[$i] = array('some_value' => $i, 'a_fixed_value' => 'some_value');
+    $_SESSION[$i << 1] = new DummyObject();
   }
 }
 
 function sessionread($n) {
   $i = -1;
   while ($i++ < $n) {
-    if (isset($_SESSION[$i])) {
-      $f = $_SESSION[$i];
-      $g = $_SESSION[$i << 1];
-    }
+    $f = $_SESSION[$i];
+    $g = $_SESSION[$i << 1];
   }
 }
 
@@ -108,11 +112,32 @@ function sessionstart() {
 }
 
 
+function filesessionstart() {
+  Session::start(new FileSessionWriter());
+}
+
+function filesessionwrite($n) {
+  $i = -1;
+  while ($i++ < $n) {
+    Session::set($i, array('some_value' => $i, 'a_fixed_value' => 'some_value'));
+    Session::set($i << 1, new DummyObject());
+  }
+}
+
+function filesessionread($n) {
+  $i = -1;
+  while ($i++ < $n) {
+    $f = Session::get($i);;
+    $g = Session::get($i << 1);;
+  }
+}
+
+
 /**
  * Test functions
  */
 
-function readtests() {
+function phpsessreadtests() {
   $t0 = $t = start_test();
   sessionstart();
   $t = end_test($t, "sessionstart()");
@@ -121,29 +146,48 @@ function readtests() {
   total($t0, "Total");
 }
 
-function writetests() {
+function phpsesswritetests() {
   $t0 = $t = start_test();
   sessionstart();
   $t = end_test($t, "sessionstart()");
-  sessionwrite(10000);
+  sessionwrite(20000);
   $t = end_test($t, "sessionwrite(20000)");
   total($t0, "Total");
 }
 
+function filesessionwritetests() {
+  $t0 = $t = start_test();
+  filesessionstart();
+  $t = end_test($t, "filesessionstart()");
+  filesessionwrite(20000);
+  $t = end_test($t, "filesessionwrite(20000)");
+  total($t0, "Total");
+}
+
+function filesessionreadtests() {
+  $t0 = $t = start_test();
+  filesessionstart();
+  $t = end_test($t, "filesessionstart()");
+  filesessionread(20000);
+  $t = end_test($t, "filesessionread(20000)");
+  total($t0, "Total");
+}
 
 /**
  * Run tests
  */
 if (isset($_GET['phpsess']) && isset($_GET['write'])) {
-  writetests();
+  phpsesswritetests();
 } else if (isset($_GET['phpsess']) && isset($_GET['read'])) {
-  readtests();
+  phpsessreadtests();
   session_unset();
-} else {
-  echo <<<NOTICE
+} else if (isset($_GET['file']) && isset($_GET['write'])){
+  filesessionwritetests();
+} else if (isset($_GET['file']) && isset($_GET['read'])) {
+  filesessionreadtests();
+}
+?>
 <p>Usage:</p>
 <p>WRITE ensures that \$_SESSION has variables in to be benchmarked with READ tests. READ unsets all \$_SESSION variables</p>
 <p><a href="./?phpsess&write">PHP SESSIONS -> WRITE TESTS</a></p>
 <p><a href="./?phpsess&read">PHP SESSIONS -> READ TESTS</a></p>
-NOTICE;
-}
