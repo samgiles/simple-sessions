@@ -40,10 +40,10 @@ class Session {
   private function __construct(SessionWriter $sessionWriter, $hash, $new = false) {
   	$this->_sessionWriter = $sessionWriter;
   	$this->_idHash = $hash;
+  	$this->_objects = array();
+  	
   	if (!$new) {
       $this->_objects = $sessionWriter->read($hash);
-  	} else {
-      $this->_objects = array();
   	}
   }
   
