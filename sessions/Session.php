@@ -80,6 +80,17 @@ class Session {
     return false;
   }
   
+  public static function clear() {
+    if (Session::sessionStarted()) {
+      $session = Session::$instance;
+      $session->_sessionWriter->clear($session->_idHash);
+      unset($_COOKIE['SESS']); 
+      return setcookie('SESS', NULL, -1);
+    }
+    
+    return false;
+  }
+  
   private static function sessionStarted() {
     if (Session::$instance === NULL) {
       trigger_error('Session not started, start session with `Session::start($sessionWriter)`', E_USER_NOTICE);

@@ -7,7 +7,7 @@ include_once('DummyObject.php');
 class PDOSessionWriterTest extends SessionWriterTest {
   
   public function __construct() {
-  	$pdo = new PDO(':remotedsn', ':uname', ':pword');
+  	$pdo = new PDO('\:dsn', '\:uname', '\:pword');
   	parent::__construct(new PDOSessionWriter($pdo));
   }
   
@@ -30,7 +30,24 @@ class PDOSessionWriterTest extends SessionWriterTest {
   }
   
   /**
-   * Tests whether the array was written to the database.  Also test the read functionality.
+   * @depends testWrite
+   */
+  public function testClear(array $testObjects) {
+  	$this->assertTrue($this->hasWrote('A', $testObjects['A']), "A");
+    $this->_writer->clear('A');
+    $this->assertTrue($this->hasRemoved('A', $testObjects['A']), "A");
+    
+    $this->assertTrue($this->hasWrote('B', $testObjects['B']), "B");
+    $this->_writer->clear('B');
+    $this->assertTrue($this->hasRemoved('B', $testObjects['B']), "B");
+    
+    $this->assertTrue($this->hasWrote('C', $testObjects['C']), "C");
+    $this->_writer->clear('C');
+    $this->assertTrue($this->hasRemoved('C', $testObjects['C']), "C");
+  }
+  
+  /**
+   * Tests whether the array was written to the database.  Also tests the read functionality.
    * @param string $key
    * @param array $array
    */
@@ -43,5 +60,9 @@ class PDOSessionWriterTest extends SessionWriterTest {
  
     return $object == $value;
 
+  }
+  
+  public function hasRemoved($key, $value) {
+    return !$this->hasWrote($key, $value);
   }
 }

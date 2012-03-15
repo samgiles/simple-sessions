@@ -4,6 +4,7 @@ class PDOSessionWriter extends SessionWriter {
   private $_pdoObject;
   private $_pdoReadStatement = NULL;
   private $_pdoWriteStatement = NULL;
+  private $_pdoDeleteStatement = NULL;
   
   private $_inDatabase = false;
   
@@ -40,9 +41,27 @@ class PDOSessionWriter extends SessionWriter {
     }
     
     $this->_pdoWriteStatement->bindValue(':hash', $hash, PDO::PARAM_STR);
+    
     $object = serialize($sessionObject);
     $this->_pdoWriteStatement->bindValue(':object', $object, PDO::PARAM_LOB);
-    // Tidy up return interfaces.. We dont NEED to return anything but should probably tidy them up.
-    return $this->_pdoWriteStatement->execute();
+    
+    $this->_pdoWriteStatement->execute();
+    $this->_inDatabase = true;
+    
+    return true; // Tidy up return interfaces.. We dont NEED to return anything but should probably tidy them up.
+  }
+  
+  public function clear($hash) {
+    if ($this->_pdoDeleteStatement === NULL) {
+      $this->_pdoDeleteStatement = $this->_pdoObject->prepare("DELETE FROM `SESSION` WHERE `SESSION`.`KEY`=:hash LIMIT 1");
+    }
+    
+    if ($this->_inDatabase) {
+      $this->_pdoDeleteStatement->bindValue(':hash', $hash, PDO::PARAM_STR);
+      $this->_pdoDeleteStatement->execute();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

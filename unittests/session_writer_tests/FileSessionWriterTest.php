@@ -56,5 +56,24 @@ class FileSessionWriterTest extends SessionWriterTest {
   	
   	$object = $this->_writer->read('C');
   	$this->assertArrayHasKey('obj', $object);
+  	return $testObjects;
+  }
+  
+  /**
+   * @depends testRead
+   */
+  public function testClear(array $testObjects) {
+  	$this->assertFileExists($_SERVER["HOME"] . '/session_tests/SESS_A.s');
+  	$this->_writer->clear('A');
+  	$this->assertFileNotExists($_SERVER["HOME"] . '/session_tests/SESS_A.s');
+  	
+  	$this->assertFileExists($_SERVER["HOME"] . '/session_tests/SESS_B.s');
+  	$this->_writer->clear('B');
+  	$this->assertFileNotExists($_SERVER["HOME"] . '/session_tests/SESS_B.s');
+  	
+  	$this->assertFileExists($_SERVER["HOME"] . '/session_tests/SESS_C.s');
+  	$this->_writer->clear('C');
+  	$this->assertFileNotExists($_SERVER["HOME"] . '/session_tests/SESS_C.s');
+  	
   }
 }
