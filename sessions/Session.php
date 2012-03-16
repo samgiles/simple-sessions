@@ -23,17 +23,16 @@ class Session {
   public static function start(SessionWriter $sessionWriter, $sessionExpires = 0, $sessionPath = -1) {
     if (Session::$instance === NULL) {
   	  //We've got to tie a particular user to a Session, so we'll create a hash for them if we haven't already.
-      if (isset($_COOKIE['SESS']) && $_COOKIE['SESS'] !== NULL) {
-        // We must have a session hash key :)
-        $sessionHash = $_COOKIE['SESS'];
+  	  $httpPersistedHash = $sessionWriter->getHttpPersistKey('SESS');
+      if ($httpPersistedHash !== NULL) {
         $new = false;
       } else {
-        $sessionHash = hash('sha256', $_SERVER['REMOTE_ADDR'] . time() . rand(0, 100));
-        setcookie('SESS', $sessionHash, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
+        $httpPersistedHash = hash('sha256', $_SERVER['REMOTE_ADDR'] . time() . rand(0, 100));
+        $sessionWriter->httpPersist('SESS', $httpPersistedHash, false, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
       	$new = true;
       }
       
-      Session::$instance = new Session($sessionWriter, $sessionHash, $new);
+      Session::$instance = new Session($sessionWriter, $httpPersistedHash, $new);
   	}
   }
   
@@ -84,8 +83,8 @@ class Session {
     if (Session::sessionStarted()) {
       $session = Session::$instance;
       $session->_sessionWriter->clear($session->_idHash);
-      unset($_COOKIE['SESS']); 
-      return setcookie('SESS', NULL, -1);
+      $session->_sessionWriter->httpPersist('SESS', $session->_idHash, true, -1, '/');
+      return true;
     }
     
     return false;
