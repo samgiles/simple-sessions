@@ -50,23 +50,15 @@ class Session {
     $this->_sessionWriter->write($this->_idHash, $this->_objects);
   }
 
-  /**
-   * Magic method used to retrieve objects stored in the Session.
-   * @param $name Returns the value stored in the Session at this key.
-   * @param $arguments No effect.
-   */
-  public function __call($name, $arguments) {
-    if (isset($_objects[$name])) {
-      return $_objects[$name];
-    } else {
-      return NULL;
-    }
-  }
 
   public static function get($key) {
     if (Session::sessionStarted()) {
       $key = (string)$key;
-      return SESSION::$instance->$key();
+      
+      if (isset(SESSION::$instance->_objects[$key])) {
+        return SESSION::$instance->_objects[$key];
+      }
+      
     }
     return NULL;
   }
@@ -90,7 +82,7 @@ class Session {
     return false;
   }
   
-  private static function sessionStarted() {
+  public static function sessionStarted() {
     if (Session::$instance === NULL) {
       trigger_error('Session not started, start session with `Session::start($sessionWriter)`', E_USER_NOTICE);
       return false;
