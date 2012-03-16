@@ -6,6 +6,7 @@ require_once('SessionWriter.php');
  * @version 0.1
  */
 class Session {
+  private static $HTTP_PERSIST_NAME = 'SESS';
   private $_objects;
   private $_idHash;
   
@@ -24,12 +25,12 @@ class Session {
   public static function start(SessionWriter $sessionWriter, $sessionExpires = 0, $sessionPath = -1) {
     if (Session::$instance === NULL) {
   	  //We've got to tie a particular user to a Session, so we'll create a hash for them if we haven't already.
-  	  $httpPersistedHash = $sessionWriter->getHttpPersistKey('SESS');
+  	  $httpPersistedHash = $sessionWriter->getHttpPersistKey(Session::$HTTP_PERSIST_NAME);
       if ($httpPersistedHash !== NULL) {
         $new = false;
       } else {
         $httpPersistedHash = hash('sha256', $_SERVER['REMOTE_ADDR'] . time() . rand(0, 100));
-        $sessionWriter->httpPersist('SESS', $httpPersistedHash, false, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
+        $sessionWriter->httpPersist(Session::$HTTP_PERSIST_NAME, $httpPersistedHash, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
       	$new = true;
       }
       
@@ -58,8 +59,8 @@ class Session {
     if (Session::sessionStarted()) {
       $key = (string)$key;
       
-      if (isset(SESSION::$instance->_objects[$key])) {
-        return SESSION::$instance->_objects[$key];
+      if (isset(Session::$instance->_objects[$key])) {
+        return Session::$instance->_objects[$key];
       }
       
     }
@@ -68,8 +69,8 @@ class Session {
 
   public static function set($key, $value) {
     if (Session::sessionStarted()) {
-      Session::$instance->_dontWrite = false;
       Session::$instance->_objects[$key] = $value;
+      Session::$instance->_dontWrite = false;
       return true;
     }
     return false;
@@ -79,7 +80,7 @@ class Session {
     if (Session::sessionStarted()) {
       $session = Session::$instance;
       $session->_sessionWriter->clear($session->_idHash);
-      $session->_sessionWriter->httpPersist('SESS', $session->_idHash, true, -1, '/');
+      $session->_sessionWriter->httpClear(Session::$HTTP_PERSIST_NAME);
       $session->_dontWrite = true;
       return true;
     }

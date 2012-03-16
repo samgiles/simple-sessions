@@ -25,13 +25,13 @@ abstract class SessionWriter {
   /**
    * Persists the session across HTTP requests.  Default is setcookie.
    */
-  public function httpPersist($keyIdentifier, $sessionHash, $clear, $sessionExpires, $sessionPath) {
-  	if (!$clear){
-      setcookie($keyIdentifier, $sessionHash, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
-  	} else {
-  	  unset($_COOKIE[$keyIdentifier]);
-      setcookie($keyIdentifier, NULL, -1);
-  	}
+  public function httpPersist($keyIdentifier, $sessionHash, $sessionExpires, $sessionPath) {
+    setcookie($keyIdentifier, $sessionHash, $sessionExpires, $sessionPath === -1 ? $_SERVER['PATH_INFO'] : $sessionPath);
+  }
+  
+  public function httpClear($keyIdentifier) {
+    unset($_COOKIE[$keyIdentifier]);
+    setcookie($keyIdentifier, NULL, -1);
   }
   
   public function getHttpPersistKey($keyIdentifier) {
