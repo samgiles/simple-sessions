@@ -10,6 +10,7 @@ class Session {
   private $_idHash;
   
   private $_sessionWriter;
+  private $_dontWrite = true;
   
   private static $instance = NULL;
   
@@ -47,7 +48,9 @@ class Session {
   }
   
   public function __destruct() {
-    $this->_sessionWriter->write($this->_idHash, $this->_objects);
+  	if ($this->_dontWrite === false) {
+      $this->_sessionWriter->write($this->_idHash, $this->_objects);
+  	}
   }
 
 
@@ -65,6 +68,7 @@ class Session {
 
   public static function set($key, $value) {
     if (Session::sessionStarted()) {
+      Session::$instance->_dontWrite = false;
       Session::$instance->_objects[$key] = $value;
       return true;
     }
@@ -76,6 +80,7 @@ class Session {
       $session = Session::$instance;
       $session->_sessionWriter->clear($session->_idHash);
       $session->_sessionWriter->httpPersist('SESS', $session->_idHash, true, -1, '/');
+      $session->_dontWrite = true;
       return true;
     }
     
